@@ -1,0 +1,267 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Lato', sans-serif;
+	/*color: #777;*/
+	font-size: 1em; /* = 16pt */
+	font-weight: 300;
+	background-color: #f9f9f9;
+}
+
+input,
+select {
+	width:100%;
+	padding:7px;
+	border-radius: 0;
+	border: none;
+	border-bottom: 1px solid silver;
+	background-color: transparent;
+	margin: 10px 0;
+}
+
+select {
+	height: 2.1em;
+}
+
+input {
+	flex: 1;
+}
+
+input:focus,
+select:focus {
+	background-color: #f9f9f9;
+	outline: none;
+}
+
+
+
+.search-container {
+	margin: 30px auto;
+	max-width: 600px;
+	background-color: #fff;
+    border-radius: .25rem;
+    box-shadow: 0 1px 0 rgba(0,0,0,.25);
+    padding: 2rem;
+    position: relative;
+    border: 1px solid #e8e8e8;
+}
+
+#search-form {
+	font-size: 1.2em;
+	display: flex;
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+}
+
+button#btn-search {
+	width: 100%;
+	padding: 10px;
+	margin-top: 1em;
+	background-color: #1abc9c;
+	border: 0;
+	outline: none;
+	border-bottom: 2px solid #16a085;
+	border-radius: .25rem;
+	font-weight: 400;
+	color: #fff;
+}
+
+.gallery-container {
+	display: -webkit-flex;
+	display: flex;
+	flex-direction: row;
+
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-items: center;
+	max-width: 920px;
+	margin: 0 auto;
+
+	padding-top: 30px;
+	padding-bottom: 100px;
+}
+
+.gallery-item {
+	width: 200px;
+	margin: 15px;
+	padding: 10px;
+	border: 1px solid e8e8e8;
+	border-radius: 3px;
+	-webkit-transition: all 0.5s;
+	transition: all 0.5s;
+	background-color: #fff;
+	box-shadow: 0 1px 1px rgba(0,0,0,.25);
+}
+
+.gallery-item a img {
+	width: 100%;
+}
+
+.gallery-item:hover {
+	box-shadow: 2px 5px 40px silver;
+}
+
+#overlay {
+	background-color: rgba(0, 0, 0, 0.7);
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	text-align: center;
+	display: none;
+}
+
+#overlay img, #overlay iframe {
+    margin: 0 auto 10px;
+    display: block;
+}
+
+#overlay p {
+	color: #fafafa;
+    max-width: 600px;
+    text-align: left;
+    margin: 10px auto;
+    padding: 0 10px;
+    line-height: 1.5rem;
+    font-size: 1.1rem;
+}
+
+#overlay .fa {
+	cursor: pointer;
+	color: white;
+	margin: 0 25px;
+}
+
+#overlay #btn-close {
+	display: block;
+	margin-right: 10px;
+	text-align: right;
+}
+
+.hide {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+@media (min-width: 426px) {
+	#search-form {
+		flex-direction: row;
+	}
+
+	input,
+	select {
+		width: auto;
+	}
+
+	select {
+		 margin: 0 15px;
+	}
+
+	input {
+		margin-left: 15px;
+	}
+
+}
+/*@media (min-width: 460px) {
+	.gallery-container {
+		justify-content:center;
+		width: 460px;
+	}
+
+	.gallery-item:nth-child(even) {
+		margin-left: 60px;
+	}
+
+}
+
+@media (min-width: 720px) {
+
+	.gallery-container {
+		width: 720px;
+	}
+
+	.gallery-item {
+		margin-left: 60px;
+	}
+
+	.gallery-item:nth-child(3n+1) {
+		margin-left: 0;
+	}
+
+}
+
+
+@media (min-width: 980px) {
+
+	.gallery-container {
+		width: 980px;
+	}
+
+	.gallery-item, .gallery-item:nth-child(3n+1) {
+		margin-left: 60px;
+	}
+
+	.gallery-item:nth-child(4n+1) {
+		margin-left: 0;
+	}
+
+	#overlay img {
+		margin-top: 3%;
+	}
+
+}*/
+
+/* for overlay */
+
+@media (orientation: landscape) {
+	/* if landscape, make sure the height is adjusted */
+
+	#overlay img {
+		height: 68vh;
+	}
+
+	#overlay iframe {
+		width: 65vw;
+    	height: 36.5625vw;
+	}
+
+
+}
+
+@media (orientation: landscape) and (min-width: 800px) {
+
+	/* show next and previous buttons on the side of the image on landscape mode only */
+	#btn-prev {
+		left: 7vw;
+	    top: 45vh;
+	    position: absolute;
+	}
+
+	#btn-next {
+		right: 7vw;
+	    top: 45vh;
+	    position: absolute;
+	}
+}
+
+
+@media (orientation: portrait) {
+	/* if portrait, make sure the width is adjusted */
+
+	#overlay img {
+		width: 100vw;
+		height: auto;
+	}
+
+	#overlay iframe {
+		width: 100vw;
+	  	height: 56.25vw;
+	}
+}

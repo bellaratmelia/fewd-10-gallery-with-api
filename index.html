@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Interactive Gallery with JS</title>
+	<link rel="stylesheet" href="css/normalize.css">
+	<link href="https://fonts.googleapis.com/css?family=Lato:300,400" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+	<main class="wrapper">
+		<div class="search-container">
+			<form action="index.html" method="get" id="search-form">
+				<label for="search">Search for</label>
+				<select id="options" name="user-options">
+					<option value="steam">songs</option>
+					<option value="spotify">photos</option>
+				</select>
+				<span>about</span>
+				<input type="text" id="search" name="user-search" placeholder="something..." required autofocus/>
+				<button type="submit" id="btn-search">SEARCH</button>
+			</form>
+		</div>
+		<div class="gallery-container">
+			<div class="gallery-item">
+				<a href="photos/01.jpg">
+					<img src="photos/01.jpg" alt="I love hay bales. Took this snap on a drive through the countryside past some straw fields" title="Hay Bales" />
+				</a>
+			</div>
+			<div class="gallery-item">
+				<a href="photos/01.jpg">
+					<img src="photos/01.jpg" alt="I love hay bales. Took this snap on a drive through the countryside past some straw fields" title="Hay Bales" />
+				</a>
+			</div>
+			<div class="gallery-item">
+				<a href="photos/01.jpg">
+					<img src="photos/01.jpg" alt="I love hay bales. Took this snap on a drive through the countryside past some straw fields" title="Hay Bales" />
+				</a>
+			</div>
+			<div class="gallery-item">
+				<a href="photos/01.jpg">
+					<img src="photos/01.jpg" alt="I love hay bales. Took this snap on a drive through the countryside past some straw fields" title="Hay Bales" />
+				</a>
+			</div>
+		</div>
+	</main>
+
+	<!-- JS SCRIPT -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<script type="text/javascript" src="js/script.js"></script>
+</body>
+</html>
