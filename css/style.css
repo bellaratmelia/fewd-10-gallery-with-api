@@ -101,6 +101,7 @@ button#btn-search {
 
 .gallery-item a img {
 	width: 100%;
+	height: auto;
 }
 
 .gallery-item:hover {

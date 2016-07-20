@@ -36,10 +36,10 @@ function populateArray() {
 		// if it's a video, change the itemType to video
 		if ( $(this).hasClass("video") ) {
 			itemObject.itemType = "video";
-		} 
+		}
 
 		itemArray.push(itemObject);
-		
+
 	});
 }
 
@@ -123,7 +123,7 @@ $(".gallery-item a").click(function(event) {
 	//find image position in array, update the counter
 	var itemLocation = $(this).attr("href");
 	counter = findItemInArray(itemArray, itemLocation);
-	
+
 	// call function to update overlay
 	updateOverlay();
 
@@ -148,42 +148,65 @@ $prevBtn.click(function() {
 	getPrevItem();
 });
 
+function flickr_display(data) {
+	$('.gallery-container').html('');
+	var the_html = '';
+	$.each(data.items, function(i, photo) {
+		the_html += '<div class="gallery-item">';
+		the_html += '<a href="' + photo.media.m +'">';
+		the_html += '<img src="'+ photo.media.m + '" alt="'+ photo.title + '" />';
+		the_html += '</a>';
+		the_html += '</div>';
+	});
 
-// ---------------------------- SEARCH FILTER CODES ---------------------------- //
+	$('.gallery-container').html(the_html);
+}
 
-// everytime user type in a character on the search box,
-// hide all items first and then
-// find item whose alt contains those characters and then
-// show these items
+function spotify_display(data) {
+	$('.gallery-container').html('');
+	var the_html = '';
+	console.log(data);
+	$.each(data.tracks.items, function(i, track) {
+		the_html += '<div class="gallery-item">';
+		the_html += '<a href="' + track.uri +'">';
+		the_html += '<img src="'+ track.album.images[0].url + '" alt="'+ track.name + '" />';
+		the_html += '</a>';
+		the_html += '</div>';
+		console.log(track);
+	});
 
-var $items = $(".gallery-item"); // basically grab all elements that fits the requirements
-
-$("#user-search").keyup(function() {
-	var term = $.trim($(this).val()).toLowerCase();
-
-		//hide everything first
-		// $items.hide().addClass("hide").filter(function() {
-		$items.each(function(){
-			// get the caption text
-			var altText = $(this).children("a").children("img").attr("alt").toLowerCase();
-
-			// check whether if term contained inside the caption text
-	        if (altText.indexOf(term) > -1) {
-	        	$(this).removeClass("hide").fadeIn(); // show elements that fulfil the search criteria 
-	        } else {
-	        	$(this).fadeOut().addClass("hide");
-	        }
-
-		});
-	// }
-});
-
+	$('.gallery-container').html(the_html);
+}
 
 // ---------------------------- DOCUMENT FUNCTION CALLS ---------------------------- //
-populateArray();
-document.onkeydown = checkKeyPress;
+
+$(document).ready(function() {
+	// populateArray();
+	// $(document).keydown(checkKeyPress);
+
+	$('form').submit(function(event) {
+		event.preventDefault(event);
+		var tag = $('#search').val();
+
+		if ($('#options').val() === 'photos') {
+			var flickr_api = "https://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";
+			var flickr_opts = {
+				tags : tag,
+				format : 'json'
+			};
+			$.getJSON(flickr_api, flickr_opts, flickr_display);
+
+		} else {
+			var spotify_api = "https://api.spotify.com/v1/search";
+			var spotify_opts = {
+				q : tag,
+    			type : 'track',
+    			limit : 20
+			};
+			$.getJSON(spotify_api, spotify_opts, spotify_display);
+		}
 
 
+  });
 
-
-
+});
