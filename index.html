@@ -23,6 +23,12 @@
 				<button type="submit" id="btn-search">SEARCH</button>
 			</form>
 		</div>
+		<div class="buttons-container">
+			<span>Sort By: </span>
+			<button type="button" id="sort-name" class="sort-button">Name</button>
+			<button type="button" id="sort-artist" class="sort-button">Artist</button>
+			<button type="button" id="sort-date" class="sort-button">Upload Date</button>
+		</div>
 		<div class="gallery-container">
 			<!-- <div class="gallery-item">
 				<a href="photos/01.jpg">
@@ -32,6 +38,21 @@
 		</div>
 	</main>
 
+	<!-- The lightbox for photo and details pulled from the API -->
+	<!-- Hidden by default -->
+	<div id="overlay">
+		<i class="fa fa-arrow-circle-left fa-2x" id="btn-prev"></i>
+		<div id="overlay-content">
+			<img src="photos/01.jpg" alt="photos" />
+			<div id="details">
+				<h3 id="title">Blueberry Cheesecake</h3>
+				<p id="date-or-album">November 2018</p>
+				<p id="user">Margaery Tyrell</p>
+				<p><a href="" id="linktofile" target="_blank">View File</a></p>
+			</div>
+		</div>
+		<i class="fa fa-arrow-circle-right fa-2x" id="btn-next"></i>
+	</div>
 	<!-- JS SCRIPT -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<script type="text/javascript" src="js/script.js"></script>

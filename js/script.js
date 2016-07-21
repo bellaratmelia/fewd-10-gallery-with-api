@@ -1,188 +1,264 @@
-
+// ---------------------------- VARS ---------------------------- //
 // Declare media item array
-var itemArray = [];
-
-// ---------------------------- LIGHTBOX CODES ---------------------------- //
+var item_array = [];
 
 // Declare global current item counter
 var counter = 0;
 
-// Declare overlay and its components
-var $overlay = $('<div id="overlay"></div>');
-var $img = $("<img>");
-var $vid = $('<iframe src=""></iframe>');
-var $caption = $("<p></p>");
-var $prevBtn = $('<i class="fa fa-arrow-circle-left fa-2x" id="btn-prev"></i>');
-var $nextBtn = $('<i class="fa fa-arrow-circle-right fa-2x" id="btn-next"></i>');
-var $closeBtn = $('<i class="fa fa-times fa-2x" id="btn-close"></i>');
+// Get overlay and its components
+var $overlay = $('#overlay');
+var $overlay_content = $('#overlay-content');
+var $img = $("#overlay img");
+var $title = $('#title');
+var $date_or_album = $('#date-or-album');
+var $user = $('#user');
+var $linktofile = $('#linktofile');
+var $prev_btn = $('#btn-prev');
+var $next_btn = $('#btn-next');
 
-// Append the components to overlay, then append it to html body
-$overlay.append($closeBtn);
-$overlay.append($img);
-$overlay.append($vid);
-$overlay.append($prevBtn);
-$overlay.append($nextBtn);
-$overlay.append($caption);
-$("body").append($overlay);
+// Sort buttons
+var $sort_container = $('.buttons-container');
+var $name_sort = $('#sort-name');
+var $artist_sort = $('#sort-artist');
+var $date_sort = $('#sort-date');
 
-// populate array of object with href, alt text, and type
-function populateArray() {
-	$(".gallery-item a").each(function() {
 
-		var itemObject = {	itemURL : $(this).attr("href"),
-							itemCaption : $(this).children("img").attr("alt"),
-							itemType : "image" }; // default type is "image"
+// ---------------------------- FUNCTIONS ---------------------------- //
 
-		// if it's a video, change the itemType to video
-		if ( $(this).hasClass("video") ) {
-			itemObject.itemType = "video";
-		}
+function flickr_response(data) {
+	process_response(data, 'Flickr');
+}
 
-		itemArray.push(itemObject);
+function spotify_response(data) {
+	process_response(data, 'Spotify');
+}
 
-	});
+function process_response(data, source) {
+	// clear item_array data
+	item_array = [];
+
+	if (source === 'Spotify') {
+		$.each(data.tracks.items, function(i, track) {
+			var item_object = {	image : track.album.images[1].url,
+								title : track.name,
+								date_or_album : track.album.name,
+								user : track.artists[0].name,
+								linktofile : track.external_urls.spotify,
+								source : 'Spotify',
+								id : i
+							};
+
+			item_array.push(item_object);
+		});
+	} else if (source === 'Flickr') {
+		$.each(data.items, function(i, photo) {
+			var item_object = {	image : photo.media.m,
+								title : photo.title,
+								date_or_album : photo.published,
+								user : photo.author,
+								linktofile : photo.link,
+								source : 'Flickr',
+								id : i
+							};
+
+			item_array.push(item_object);
+		});
+	}
+
+	// UPDATE THE GALLERY
+	update_gallery();
+
 }
 
 // function to find img position in array of object based on the img URL
-function findItemInArray(arrayOfObj, theURL) {
+function find_item_in_array(arrayOfObj, the_title) {
 	for (var i = 0; i < arrayOfObj.length; i++) {
-		if (arrayOfObj[i].itemURL === theURL) {
+		if (arrayOfObj[i].title === the_title) {
 			return i;
 		}
 	}
 }
 
-function getNextItem() {
+function get_next_item() {
 	// check if counter is at the end. if not, +1
 	// else, go back to first image
-	if (counter < itemArray.length - 1 && counter >= 0) {
+	if (counter < item_array.length - 1 && counter >= 0) {
 		counter++;
 	} else {
 		counter = 0;
 	}
-	updateOverlay();
+	update_overlay();
 }
 
-function getPrevItem() {
+function get_prev_item() {
 	// check if counter is at the beginning. if not, -1
 	// else, go back to last image.
-	if (counter <= itemArray.length - 1 && counter > 0) {
+	if (counter <= item_array.length - 1 && counter > 0) {
 		counter--;
 	} else {
-		counter = itemArray.length - 1;
+		counter = item_array.length - 1;
 	}
-	updateOverlay();
+	update_overlay();
 }
 
-function updateOverlay() {
-	// get the object, setup the image URL & caption based on current counter
-	if ( itemArray[counter].itemType === 'video' ) {
-		// if it's a video,
-		$img.hide();
+function update_overlay() {
 
-		$vid.attr("src", itemArray[counter].itemURL);
-		$caption.text(itemArray[counter].itemCaption);
-
-		//animate the video a little bit
-		$vid.hide();
-		$vid.fadeIn(500);
-
+	$img.attr("src", item_array[counter].image);
+	$title.html(item_array[counter].title);
+	if (item_array[counter].source === 'Spotify') {
+		$date_or_album.html('From the album: <strong>' + item_array[counter].date_or_album + '</strong>');
 	} else {
-		// if it's an image
-		$vid.hide();
-
-		$img.attr("src", itemArray[counter].itemURL);
-		$caption.text(itemArray[counter].itemCaption);
-
-		// animate the image a little bit
-		$img.hide();
-		$img.fadeIn();
+		$date_or_album.html('Published on: <strong>' + item_array[counter].date_or_album) + '</strong>';
 	}
+	$user.html('By <strong>' + item_array[counter].user + '</strong>');
+	$linktofile.attr("href", item_array[counter].linktofile);
+	$linktofile.text('View in ' + item_array[counter].source);
 
-	// show captions
-	$caption.hide();
-	$caption.fadeIn();
+	// show
+	$overlay.show();
+	$overlay_content.fadeIn();
 
 }
 
-function checkKeyPress(e) {
+function update_gallery() {
+	$('.gallery-container').empty();
+	var the_html = '';
+	var source = '';
+
+	// Display the items inside item_array
+	$.each(item_array, function(i, item) {
+		the_html += '<div class="gallery-item">';
+		the_html += '<a href="' + item.linktofile +'">';
+		the_html += '<img src="'+ item.image + '" alt="'+ item.title + '" title="' + item.title +'" id="' + item.id + '"/>';
+		the_html += '</a>';
+		the_html += '</div>';
+		source = item.source;
+	});
+
+	$('.gallery-container').html(the_html);
+
+	// Show and hide the appropriate sort buttons;
+	$sort_container.show();
+	$name_sort.show();
+	if (source === 'Flickr') {
+		$date_sort.show();
+		$artist_sort.hide();
+	} else {
+		$date_sort.hide();
+		$artist_sort.show();
+	}
+}
+
+function on_keypress(e) {
 	if (e.keyCode === 37) {
 		// left arrow button
-       getPrevItem();
+       get_prev_item();
     }
     else if (e.keyCode === 39) {
        // right arrow button
-       getNextItem();
+       get_next_item();
     }
 }
 
+// Sort function to sort by name
+function compare_name(a, b) {
+  	if (a.name < b.name) {
+		return -1;
+	} else if (a.name > b.name) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+// Sort function to sort by artist
+function compare_artist(a, b) {
+  	if (a.user < b.user) {
+		return -1;
+	} else if (a.user > b.user) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+function compare_date(a, b) {
+  	if (a.date_or_album < b.date_or_album) {
+		return -1;
+	} else if (a.date_or_album > b.date_or_album) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
+// ---------------------------- EVENT TRIGGERS ---------------------------- //
+
 // on gallery item click function
-$(".gallery-item a").click(function(event) {
+$( ".gallery-container" ).on( "click", ".gallery-item", function(event) {
+// $(".gallery-item").click(function(event) {
 	event.preventDefault();
 
-	//find image position in array, update the counter
-	var itemLocation = $(this).attr("href");
-	counter = findItemInArray(itemArray, itemLocation);
+	//find image position in array, update_or_album the counter
+	var $img = $('img');
+	counter = $(this).find($img).attr("id");
 
-	// call function to update overlay
-	updateOverlay();
+	// call function to update_or_album overlay
+	update_overlay();
 
 	// Show overlay
 	$overlay.fadeIn();
-	// console.log(counter);
+});
+
+//on next button click function
+$next_btn.click(function() {
+	get_next_item();
+});
+
+//on previous button click function
+$prev_btn.click(function() {
+	get_prev_item();
 });
 
 // on close button click function
-$closeBtn.click(function() {
+$overlay.click(function() {
 	//hide overlay
 	$overlay.fadeOut();
 });
 
-//on next button click function
-$nextBtn.click(function() {
-	getNextItem();
+$name_sort.click(function(event) {
+	event.preventDefault(event);
+
+	// sort items
+	item_array.sort(compare_name);
+
+	// update gallery
+	update_gallery();
 });
 
-//on previous button click function
-$prevBtn.click(function() {
-	getPrevItem();
+$artist_sort.click(function(event) {
+	event.preventDefault(event);
+
+	// sort items
+	item_array.sort(compare_artist);
+
+	// update gallery
+	update_gallery();
 });
 
-function flickr_display(data) {
-	$('.gallery-container').html('');
-	var the_html = '';
-	$.each(data.items, function(i, photo) {
-		the_html += '<div class="gallery-item">';
-		the_html += '<a href="' + photo.media.m +'">';
-		the_html += '<img src="'+ photo.media.m + '" alt="'+ photo.title + '" />';
-		the_html += '</a>';
-		the_html += '</div>';
-	});
+$date_sort.click(function(event) {
+	event.preventDefault(event);
 
-	$('.gallery-container').html(the_html);
-}
+	// sort items
+	item_array.sort(compare_date);
 
-function spotify_display(data) {
-	$('.gallery-container').html('');
-	var the_html = '';
-	console.log(data);
-	$.each(data.tracks.items, function(i, track) {
-		the_html += '<div class="gallery-item">';
-		the_html += '<a href="' + track.uri +'">';
-		the_html += '<img src="'+ track.album.images[0].url + '" alt="'+ track.name + '" />';
-		the_html += '</a>';
-		the_html += '</div>';
-		console.log(track);
-	});
-
-	$('.gallery-container').html(the_html);
-}
-
-// ---------------------------- DOCUMENT FUNCTION CALLS ---------------------------- //
+	// update gallery
+	update_gallery();
+});
 
 $(document).ready(function() {
-	// populateArray();
-	// $(document).keydown(checkKeyPress);
+	$overlay.hide();
+	$sort_container.hide();
 
 	$('form').submit(function(event) {
 		event.preventDefault(event);
@@ -194,7 +270,7 @@ $(document).ready(function() {
 				tags : tag,
 				format : 'json'
 			};
-			$.getJSON(flickr_api, flickr_opts, flickr_display);
+			$.getJSON(flickr_api, flickr_opts, flickr_response);
 
 		} else {
 			var spotify_api = "https://api.spotify.com/v1/search";
@@ -203,10 +279,10 @@ $(document).ready(function() {
     			type : 'track',
     			limit : 20
 			};
-			$.getJSON(spotify_api, spotify_opts, spotify_display);
+			$.getJSON(spotify_api, spotify_opts, spotify_response);
 		}
+	});
 
-
-  });
+	$(document).keydown(on_keypress);
 
 });

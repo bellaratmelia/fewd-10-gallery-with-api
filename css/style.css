@@ -35,9 +35,8 @@ select:focus {
 	outline: none;
 }
 
-
-
-.search-container {
+.search-container,
+.buttons-container {
 	margin: 30px auto;
 	max-width: 600px;
 	background-color: #fff;
@@ -46,6 +45,10 @@ select:focus {
     padding: 2rem;
     position: relative;
     border: 1px solid #e8e8e8;
+}
+
+.buttons-container {
+	text-align: center;
 }
 
 #search-form {
@@ -58,7 +61,8 @@ select:focus {
 	flex-direction: column;
 }
 
-button#btn-search {
+#btn-search,
+#linktofile {
 	width: 100%;
 	padding: 10px;
 	margin-top: 1em;
@@ -68,6 +72,19 @@ button#btn-search {
 	border-bottom: 2px solid #16a085;
 	border-radius: .25rem;
 	font-weight: 400;
+	color: #fff;
+}
+
+#linktofile {
+	text-decoration: none;
+}
+
+.sort-button {
+	border: 1px solid #3498db;
+	border-bottom: 2px solid #2980b9;
+	background-color: #3498db;
+	border-radius: .25rem;
+	padding: 5px;
 	color: #fff;
 }
 
@@ -116,17 +133,36 @@ button#btn-search {
 	top: 0;
 	left: 0;
 	text-align: center;
-	display: none;
 }
 
-#overlay img, #overlay iframe {
-    margin: 0 auto 10px;
-    display: block;
+#overlay,
+#overlay-content {
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	flex-direction: row;
+	flex-wrap: wrap;
 }
 
-#overlay p {
+#overlay-content {
+	width: 75%;
+	max-width: 920px;
+	background-color: rgba(0, 0, 0, 0.5);
+	padding: 30px;
+	border-radius: 3px;
+}
+
+#overlay-content img {
+	width: 100%;
+    height: auto;
+    margin: 10px;
+    max-width: 275px;
+}
+
+#overlay-content p,
+#overlay-content h3,
+#overlay-content a {
 	color: #fafafa;
-    max-width: 600px;
     text-align: left;
     margin: 10px auto;
     padding: 0 10px;
@@ -134,16 +170,13 @@ button#btn-search {
     font-size: 1.1rem;
 }
 
+#overlay-content #details {
+	flex: 1 50%;
+}
+
 #overlay .fa {
 	cursor: pointer;
 	color: white;
-	margin: 0 25px;
-}
-
-#overlay #btn-close {
-	display: block;
-	margin-right: 10px;
-	text-align: right;
 }
 
 .hide {
@@ -169,100 +202,4 @@ button#btn-search {
 		margin-left: 15px;
 	}
 
-}
-/*@media (min-width: 460px) {
-	.gallery-container {
-		justify-content:center;
-		width: 460px;
-	}
-
-	.gallery-item:nth-child(even) {
-		margin-left: 60px;
-	}
-
-}
-
-@media (min-width: 720px) {
-
-	.gallery-container {
-		width: 720px;
-	}
-
-	.gallery-item {
-		margin-left: 60px;
-	}
-
-	.gallery-item:nth-child(3n+1) {
-		margin-left: 0;
-	}
-
-}
-
-
-@media (min-width: 980px) {
-
-	.gallery-container {
-		width: 980px;
-	}
-
-	.gallery-item, .gallery-item:nth-child(3n+1) {
-		margin-left: 60px;
-	}
-
-	.gallery-item:nth-child(4n+1) {
-		margin-left: 0;
-	}
-
-	#overlay img {
-		margin-top: 3%;
-	}
-
-}*/
-
-/* for overlay */
-
-@media (orientation: landscape) {
-	/* if landscape, make sure the height is adjusted */
-
-	#overlay img {
-		height: 68vh;
-	}
-
-	#overlay iframe {
-		width: 65vw;
-    	height: 36.5625vw;
-	}
-
-
-}
-
-@media (orientation: landscape) and (min-width: 800px) {
-
-	/* show next and previous buttons on the side of the image on landscape mode only */
-	#btn-prev {
-		left: 7vw;
-	    top: 45vh;
-	    position: absolute;
-	}
-
-	#btn-next {
-		right: 7vw;
-	    top: 45vh;
-	    position: absolute;
-	}
-}
-
-
-@media (orientation: portrait) {
-	/* if portrait, make sure the width is adjusted */
-
-	#overlay img {
-		width: 100vw;
-		height: auto;
-	}
-
-	#overlay iframe {
-		width: 100vw;
-	  	height: 56.25vw;
-	}
 }
