@@ -24,6 +24,17 @@ var $date_sort = $('#sort-date');
 
 
 // ---------------------------- FUNCTIONS ---------------------------- //
+function disable_form_elems() {
+	$('#btn-search').val('Searching...');
+	$('#search').prop('disabled', true);
+	$('#options').prop('disabled', true);
+}
+
+function enable_form_elems() {
+	$('#btn-search').val('SEARCH');
+	$('#search').prop('disabled', false);
+	$('#options').prop('disabled', false);
+}
 
 function flickr_response(data) {
 	process_response(data, 'Flickr');
@@ -68,15 +79,6 @@ function process_response(data, source) {
 	// UPDATE THE GALLERY
 	update_gallery();
 
-}
-
-// function to find img position in array of object based on the img URL
-function find_item_in_array(arrayOfObj, the_title) {
-	for (var i = 0; i < arrayOfObj.length; i++) {
-		if (arrayOfObj[i].title === the_title) {
-			return i;
-		}
-	}
 }
 
 function get_next_item() {
@@ -147,6 +149,9 @@ function update_gallery() {
 		$date_sort.hide();
 		$artist_sort.show();
 	}
+
+	// enable the search form elements
+	enable_form_elems();
 }
 
 function on_keypress(e) {
@@ -212,11 +217,13 @@ $( ".gallery-container" ).on( "click", ".gallery-item", function(event) {
 
 //on next button click function
 $next_btn.click(function() {
+	event.stopPropagation();
 	get_next_item();
 });
 
 //on previous button click function
 $prev_btn.click(function() {
+	event.stopPropagation();
 	get_prev_item();
 });
 
@@ -234,6 +241,10 @@ $name_sort.click(function(event) {
 
 	// update gallery
 	update_gallery();
+
+	// remove and add the appropriate classes
+	$('.sort-button').removeClass('active');
+	$(this).addClass('active');
 });
 
 $artist_sort.click(function(event) {
@@ -244,6 +255,10 @@ $artist_sort.click(function(event) {
 
 	// update gallery
 	update_gallery();
+
+	// remove and add the appropriate classes
+	$('.sort-button').removeClass('active');
+	$(this).addClass('active');
 });
 
 $date_sort.click(function(event) {
@@ -254,6 +269,10 @@ $date_sort.click(function(event) {
 
 	// update gallery
 	update_gallery();
+
+	// remove and add the appropriate classes
+	$('.sort-button').removeClass('active');
+	$(this).addClass('active');
 });
 
 $(document).ready(function() {
@@ -262,8 +281,14 @@ $(document).ready(function() {
 
 	$('form').submit(function(event) {
 		event.preventDefault(event);
+
+		// disable form elements
+		disable_form_elems();
+
+		// get the search term
 		var tag = $('#search').val();
 
+		// Based on the options chosen, send request to the source
 		if ($('#options').val() === 'photos') {
 			var flickr_api = "https://api.flickr.com/services/feeds/photos_public.gne?jsoncallback=?";
 			var flickr_opts = {
