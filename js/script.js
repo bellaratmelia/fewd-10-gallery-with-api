@@ -89,6 +89,7 @@ function get_next_item() {
 	} else {
 		counter = 0;
 	}
+
 	update_overlay();
 }
 
@@ -129,9 +130,9 @@ function update_gallery() {
 
 	// Display the items inside item_array
 	$.each(item_array, function(i, item) {
-		the_html += '<div class="gallery-item">';
-		the_html += '<a href="' + item.linktofile +'">';
-		the_html += '<img src="'+ item.image + '" alt="'+ item.title + '" title="' + item.title +'" id="' + item.id + '"/>';
+		the_html += '<div class="gallery-item"' +'" id="'+ item.id + '"">';
+		the_html += '<a href="' + item.linktofile + '">';
+		the_html += '<img src="'+ item.image + '" alt="'+ item.title + '" title="' + item.title +'"/>';
 		the_html += '</a>';
 		the_html += '</div>';
 		source = item.source;
@@ -204,10 +205,15 @@ $( ".gallery-container" ).on( "click", ".gallery-item", function(event) {
 // $(".gallery-item").click(function(event) {
 	event.preventDefault();
 
-	//find image position in array, update_or_album the counter
-	var $img = $('img');
-	counter = $(this).find($img).attr("id");
+	// find the unique ID's order in the array
+	var unique_id = $(this).attr("id");
 
+	for (var i = 0; i < item_array.length; i++) {
+		// console.log(i);
+		if (item_array[i].id == unique_id) {
+			counter = i;
+		}
+	}
 	// call function to update_or_album overlay
 	update_overlay();
 
@@ -216,13 +222,15 @@ $( ".gallery-container" ).on( "click", ".gallery-item", function(event) {
 });
 
 //on next button click function
-$next_btn.click(function() {
+$next_btn.click(function(event) {
+	event.preventDefault();
 	event.stopPropagation();
 	get_next_item();
 });
 
 //on previous button click function
-$prev_btn.click(function() {
+$prev_btn.click(function(event) {
+	event.preventDefault();
 	event.stopPropagation();
 	get_prev_item();
 });
@@ -259,6 +267,7 @@ $artist_sort.click(function(event) {
 	// remove and add the appropriate classes
 	$('.sort-button').removeClass('active');
 	$(this).addClass('active');
+	console.log(item_array);
 });
 
 $date_sort.click(function(event) {
